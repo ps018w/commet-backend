@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Compiled Python files
+*.pyc
+*.pyo
+
+# Temporary files
+*.~
+*.swp
+
+# pycharm
+.idea/
+.vscode/
+
+# Environment variables
+.env
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+
+# SQLite database files
+*.sqlite3
+
+# User-specific files
+*.suo
+*.user
+*.suo
+*.user
+
+# Virtual environment
+venv/
