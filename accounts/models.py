@@ -1,10 +1,11 @@
-#from django.db import models
+# from django.db import models
 
 # Create your models here.
 # accounts/models.py
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from .constant import TIMEZONES
+from .constant import TIMEZONES, USER_TYPES
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -22,12 +23,14 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=50, blank=True)
     time_zone = models.CharField(max_length=100, blank=True, null=True, choices=TIMEZONES)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    user_type = models.CharField(max_length=100, blank=True, null=True, choices=USER_TYPES)
 
     objects = CustomUserManager()
 
@@ -36,6 +39,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-
-
