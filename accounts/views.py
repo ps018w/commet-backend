@@ -83,40 +83,10 @@ from rest_framework.response import Response
 #from .serializers import C, RecurringMeetingSerializer
 from dateutil import rrule
 from datetime import datetime
-
-class CalendarCreateView(generics.ListCreateAPIView):
+from rest_framework import viewsets
+from rest_framework.decorators import action
+class CalendarCreateView(viewsets.GenericViewSet):
     queryset = Calendar.objects.all()
 
     serializer_class = CalendarSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data)
-
-    def perform_create(self, serializer):
-        recurring_meeting = serializer.save()
-
-        if recurring_meeting.recurrence_pattern == 'daily':
-            recurrence_rule = rrule.DAILY
-        elif recurring_meeting.recurrence_pattern == 'weekly':
-            recurrence_rule = rrule.WEEKLY
-        else:
-            # Handle other recurrence patterns as needed
-            recurrence_rule = rrule.DAILY
-
-        meetings = list(
-            rrule.rrule(
-                recurrence_rule,
-                dtstart=recurring_meeting.meeting.date_time,
-                until=recurring_meeting.recurrence_end_date
-            )
-        )
-
-        for meeting_time in meetings:
-            Calendar.objects.create(
-                title=recurring_meeting.meeting.title,
-                date_time=meeting_time,
-                description=recurring_meeting.meeting.description
-            )

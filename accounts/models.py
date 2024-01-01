@@ -40,13 +40,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class RecurrencePattern(models.Model):
-    frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES)
-    interval = models.IntegerField(default=1)
-    days_of_week = models.ManyToManyField('DayOfWeek', blank=True)
-
-    def __str__(self):
-        return f"{self.get_frequency_display()} every {self.interval} {'day' if self.interval == 1 else 'days'}"
 
 class DayOfWeek(models.Model):
     name = models.CharField(max_length=9,choices=DAY_OF_WEEK)
@@ -59,12 +52,12 @@ class Calendar(models.Model):
     title = models.CharField(max_length=255, blank=False)
     description = models.TextField(blank=True)
 
-    #repeat_mode = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, blank=True,default='Daily')
+    frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, null=True, blank=True)
+
+    days_of_week = models.ManyToManyField(DayOfWeek, blank=True)
 
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
-
-    recurrence = models.ForeignKey(RecurrencePattern, on_delete=models.CASCADE, null=True, blank=True)
 
     #days_of_week = MultiSelectField(choices=DAY_OF_WEEK,max_length=100,blank=True)
 
