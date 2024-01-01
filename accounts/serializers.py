@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Calendar
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -18,3 +18,11 @@ class UsersSerializer(serializers.ModelSerializer):
 class AuthUserSerializer(UsersSerializer):
     class Meta(UsersSerializer.Meta):
         fields = UsersSerializer.Meta.fields
+
+
+class CalendarSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = Calendar
+        fields = '__all__'

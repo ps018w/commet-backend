@@ -2,8 +2,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import CustomUser
-from .serializers import UsersSerializer,AuthUserSerializer
+from .models import CustomUser, Calendar
+from .serializers import UsersSerializer,AuthUserSerializer, CalendarSerializer
 from rest_framework.permissions import AllowAny
 #from rest_framework_api_key.per
 
@@ -75,3 +75,48 @@ class LoginAPIView(APIView):
             else:
                 return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework import generics
+from rest_framework.response import Response
+#from .models import Meeting, RecurringMeeting
+#from .serializers import C, RecurringMeetingSerializer
+from dateutil import rrule
+from datetime import datetime
+
+class CalendarCreateView(generics.ListCreateAPIView):
+    queryset = Calendar.objects.all()
+
+    serializer_class = CalendarSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        recurring_meeting = serializer.save()
+
+        if recurring_meeting.recurrence_pattern == 'daily':
+            recurrence_rule = rrule.DAILY
+        elif recurring_meeting.recurrence_pattern == 'weekly':
+            recurrence_rule = rrule.WEEKLY
+        else:
+            # Handle other recurrence patterns as needed
+            recurrence_rule = rrule.DAILY
+
+        meetings = list(
+            rrule.rrule(
+                recurrence_rule,
+                dtstart=recurring_meeting.meeting.date_time,
+                until=recurring_meeting.recurrence_end_date
+            )
+        )
+
+        for meeting_time in meetings:
+            Calendar.objects.create(
+                title=recurring_meeting.meeting.title,
+                date_time=meeting_time,
+                description=recurring_meeting.meeting.description
+            )
