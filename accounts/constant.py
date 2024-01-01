@@ -4,7 +4,7 @@ TIMEZONES = [
     ('AEST', 'Australian Eastern Standard Time'),
 ]
 USER_TYPES = [('tutor', 'tutor'), ('student', 'student')]
-
+REPEAT_MODE = [('D', 'Daily'), ('W', 'Weekly'), ('M', 'Monthly'),('C', "Custom")]
 DAY_OF_WEEK=[
     ('MON', 'Monday'),
     ('TUE', 'Tuesday'),
