@@ -92,7 +92,7 @@ class CalendarCreateView(APIView):
 
     def get(self, request, format=None):
         user= CustomUser.objects.get(email=request.data['email'])
-        calendar = Calendar.objects.get(user=user)
+        calendar = Calendar.objects.filter(user=user)
         serializer = CalendarSerializer(calendar, many=True)
         return Response(serializer.data)
 
