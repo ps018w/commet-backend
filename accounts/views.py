@@ -1,6 +1,5 @@
 
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser, Calendar
 from .serializers import UsersSerializer,AuthUserSerializer, CalendarSerializer
@@ -10,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate, login
 
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+
 
 class UserModelList(APIView):
     def get(self, request):
@@ -77,14 +76,8 @@ class LoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework import generics
 from rest_framework.response import Response
-#from .models import Meeting, RecurringMeeting
-#from .serializers import C, RecurringMeetingSerializer
-from dateutil import rrule
-from datetime import datetime
-from rest_framework import viewsets
-from rest_framework.decorators import action
+from accounts.services import create_slot
 class CalendarCreateView(APIView):
     queryset = Calendar.objects.all()
 
@@ -98,7 +91,39 @@ class CalendarCreateView(APIView):
 
     def post(self, request, format=None):
         serializer = CalendarSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        data= create_slot(request)#freq, user, start_time,days_of_week)
+            #print(slot_data)
+        if data:
+            return Response({'message': 'Schedules booked successfully.'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Errors'}, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteTutorSlot(APIView):
+    def post(self,request):
+
+        try:
+            day_of_week = request.data.get('days_of_week')
+            email = request.data.get('email')
+            user= CustomUser.objects.get(email=email)
+            schedule_date = request.data.get('schedule_date')
+
+            if not day_of_week :
+                return Response({'error': 'Day of the week is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            elif day_of_week and not schedule_date:
+                Calendar.objects.filter(user=user.id, days_of_week=day_of_week).delete()
+                return Response({'message': f'Schedules for ALL {day_of_week} deleted successfully.'},
+                         status=status.HTTP_200_OK)
+            elif day_of_week and schedule_date:
+
+                Calendar.objects.filter(user= user.id,days_of_week=day_of_week, schedule_date=schedule_date).delete()
+                return Response({'message': f'Schedules for {day_of_week}: {schedule_date} deleted successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"No schedule found to deleted"}, status=status.HTTP_404_NOT_FOUND)
+
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
