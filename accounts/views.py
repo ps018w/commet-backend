@@ -1,14 +1,19 @@
-
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import CustomUser, Calendar
-from .serializers import UsersSerializer,AuthUserSerializer, CalendarSerializer
+from .serializers import UsersSerializer, AuthUserSerializer, CalendarSerializer
 from rest_framework.permissions import AllowAny
-#from rest_framework_api_key.per
+# from rest_framework_api_key.per
 
 from django.contrib.auth import authenticate, login
 
 from rest_framework.authentication import SessionAuthentication
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+
+from rest_framework.response import Response
+from accounts.services import create_slot
 
 
 class UserModelList(APIView):
@@ -16,7 +21,6 @@ class UserModelList(APIView):
         my_models = CustomUser.objects.all()
         serializer = UsersSerializer(my_models, many=True)
         return Response(serializer.data)
-
 
     def post(self, request):
         serializer = UsersSerializer(data=request.data)
@@ -31,14 +35,6 @@ class SignUpView(APIView):
     # serializer_class = UsersSerializer
     permission_classes = [AllowAny]
 
-    def get_serializer_context(self):
-
-
-        return {
-            'request':self.request,
-            'format':self.format_kwarg,
-            'view':self
-        }
 
     def post(self, request, format=None):
         serializer = UsersSerializer(data=request.data)
@@ -48,20 +44,13 @@ class SignUpView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class LoginAPIView(APIView):
     authentication_classes = [SessionAuthentication]
-    permission_classes = [AllowAny ]
-
-    def get_serializer_context(self):
+    permission_classes = [AllowAny]
 
 
-        return {
-            'request':self.request,
-            'format':self.format_kwarg,
-            'view':self
-        }
 
+    @swagger_auto_schema(responses={200: AuthUserSerializer()})
     def post(self, request, format=None):
         serializer = AuthUserSerializer(data=request.data)
         print(request)
@@ -76,15 +65,15 @@ class LoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework.response import Response
-from accounts.services import create_slot
+
 class CalendarCreateView(APIView):
     queryset = Calendar.objects.all()
 
-    #serializer_class = CalendarSerializer(data=queryset)
+    # serializer_class = CalendarSerializer(data=queryset)
+    @swagger_auto_schema(responses={200: CalendarSerializer(many=True)})
 
     def get(self, request, format=None):
-        user= CustomUser.objects.get(email=request.data['email'])
+        user = CustomUser.objects.get(email=request.data['email'])
         calendar = Calendar.objects.filter(user=user)
         serializer = CalendarSerializer(calendar, many=True)
         return Response(serializer.data)
@@ -92,38 +81,35 @@ class CalendarCreateView(APIView):
     def post(self, request, format=None):
         serializer = CalendarSerializer(data=request.data)
 
-        data= create_slot(request)#freq, user, start_time,days_of_week)
-            #print(slot_data)
+        data = create_slot(request)  # freq, user, start_time,days_of_week)
+        # print(slot_data)
         if data:
             return Response({'message': 'Schedules booked successfully.'}, status=status.HTTP_200_OK)
         return Response({'message': 'Errors'}, status=status.HTTP_400_BAD_REQUEST)
 
-class DeleteTutorSlot(APIView):
-    def post(self,request):
 
+class DeleteTutorSlot(APIView):
+    def delete(self, request):
         try:
             day_of_week = request.data.get('days_of_week')
             email = request.data.get('email')
-            user= CustomUser.objects.get(email=email)
+            user = CustomUser.objects.get(email=email)
             schedule_date = request.data.get('schedule_date')
 
-            if not day_of_week :
+            if not day_of_week:
                 return Response({'error': 'Day of the week is required.'}, status=status.HTTP_400_BAD_REQUEST)
             elif day_of_week and not schedule_date:
                 Calendar.objects.filter(user=user.id, days_of_week=day_of_week).delete()
                 return Response({'message': f'Schedules for ALL {day_of_week} deleted successfully.'},
-                         status=status.HTTP_200_OK)
+                                status=status.HTTP_200_OK)
             elif day_of_week and schedule_date:
 
-                Calendar.objects.filter(user= user.id,days_of_week=day_of_week, schedule_date=schedule_date).delete()
-                return Response({'message': f'Schedules for {day_of_week}: {schedule_date} deleted successfully.'}, status=status.HTTP_200_OK)
+                Calendar.objects.filter(user=user.id, days_of_week=day_of_week, schedule_date=schedule_date).delete()
+                return Response({'message': f'Schedules for {day_of_week}: {schedule_date} deleted successfully.'},
+                                status=status.HTTP_200_OK)
             else:
-                return Response({"message":"No schedule found to deleted"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"message": "No schedule found to deleted"}, status=status.HTTP_404_NOT_FOUND)
 
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
