@@ -35,7 +35,7 @@ class SignUpView(APIView):
     # serializer_class = UsersSerializer
     permission_classes = [AllowAny]
 
-
+    @swagger_auto_schema(responses={200: AuthUserSerializer()}, request_body=AuthUserSerializer)
     def post(self, request, format=None):
         serializer = UsersSerializer(data=request.data)
         if serializer.is_valid():
@@ -48,9 +48,7 @@ class LoginAPIView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [AllowAny]
 
-
-
-    @swagger_auto_schema(responses={200: AuthUserSerializer()})
+    # @swagger_auto_schema(responses={200: AuthUserSerializer()})
     def post(self, request, format=None):
         serializer = AuthUserSerializer(data=request.data)
         print(request)
@@ -65,13 +63,11 @@ class LoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class CalendarCreateView(APIView):
     queryset = Calendar.objects.all()
 
     # serializer_class = CalendarSerializer(data=queryset)
     @swagger_auto_schema(responses={200: CalendarSerializer(many=True)})
-
     def get(self, request, format=None):
         user = CustomUser.objects.get(email=request.data['email'])
         calendar = Calendar.objects.filter(user=user)
