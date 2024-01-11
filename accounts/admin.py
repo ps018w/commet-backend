@@ -2,21 +2,29 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import CustomUser,Calendar,DayOfWeek
+from .models import CustomUser, Calendar, DayOfWeek, UserDetails, Timeslot, BookingSlot, TeachingClass, UserEducation, \
+    TeachingPreference, Subjects, SubjectSpecialization, MediaGallery
 
-#admin.site.register(CustomUser)
-#admin.site.register(Calendar)
+# admin.site.register(CustomUser)
+# admin.site.register(Calendar)
 admin.site.register(DayOfWeek)
+admin.site.register(UserDetails)
+admin.site.register(Timeslot)
+admin.site.register(TeachingClass)
+admin.site.register(UserEducation)
+admin.site.register(TeachingPreference)
+admin.site.register(Subjects)
+admin.site.register(SubjectSpecialization)
+admin.site.register(MediaGallery)
 
 
 @admin.register(CustomUser)
 class CalendarAdmin(admin.ModelAdmin):
-
     fieldsets = (
         (
             None,
             {
-                "fields":(
+                "fields": (
                     "email",
                     "full_name",
                     "time_zone",
@@ -27,7 +35,7 @@ class CalendarAdmin(admin.ModelAdmin):
             },
         ),
 
-        #("important dates", {"fields":("start_time", "modified_at")})
+        # ("important dates", {"fields":("start_time", "modified_at")})
     )
     list_display = (
         "email",
@@ -35,15 +43,13 @@ class CalendarAdmin(admin.ModelAdmin):
     )
 
 
-
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
-
     fieldsets = (
         (
             None,
             {
-                "fields":(
+                "fields": (
                     "user",
                     "title",
                     "description",
@@ -57,7 +63,7 @@ class CalendarAdmin(admin.ModelAdmin):
             },
         ),
 
-        #("important dates", {"fields":("start_time", "modified_at")})
+        # ("important dates", {"fields":("start_time", "modified_at")})
     )
     list_display = (
         "user",

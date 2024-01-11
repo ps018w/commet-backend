@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'apis',
     'accounts',
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'phonenumber_field'
 ]
 AUTH_USER_MODEL = 'accounts.CustomUser'
 # ALLOWED_HOSTS=['*']
