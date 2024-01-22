@@ -37,6 +37,18 @@ schema_view = get_schema_view(
     public=True,
 
 )
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Basic': {
+            'type': 'basic'
+      },
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
