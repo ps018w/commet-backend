@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import UserModelList, SignUpView, LoginAPIView, CalendarCreateView, DeleteTutorSlot
+from .views import UserModelList, SignUpView, LoginAPIView, CalendarCreateView, DeleteTutorSlot, UserDetailsApi, \
+    UserEducationAPI, TeachingPreferenceAPI
 
 urlpatterns = [
     path('user/', UserModelList.as_view(), name='user'),
@@ -7,5 +8,9 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
     path('tutor-time-slot/', CalendarCreateView.as_view(), name='time-slot-create'),
     path('tutor-time-slot_delete/', DeleteTutorSlot.as_view(), name='time-slot-delete'),
+    path('UserDetailsApi/', UserDetailsApi.as_view(), name='userdetailsapi'),
+    path('UserEducationAPI/', UserEducationAPI.as_view(), name='Usereducationapi'),
+    path('TeachingPreferenceAPI/', TeachingPreferenceAPI.as_view(), name='teachingpreferenceapi'),
+    path('logout/', UserDetailsApi.as_view(), name='userdetailsapi'),
 
 ]
