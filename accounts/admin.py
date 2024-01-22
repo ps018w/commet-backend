@@ -19,7 +19,7 @@ admin.site.register(MediaGallery)
 
 
 @admin.register(CustomUser)
-class CalendarAdmin(admin.ModelAdmin):
+class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None,
@@ -67,8 +67,6 @@ class CalendarAdmin(admin.ModelAdmin):
         # ("important dates", {"fields":("start_time", "modified_at")})
     )
     list_display = (
-        "user",
         "schedule_date",
-        "days_of_week",
         "start_time"
     )
