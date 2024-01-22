@@ -126,19 +126,23 @@ class Calendar(models.Model):
 
     frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, default='Monthly', null=True, blank=True)
 
-    days_of_week = models.CharField(null=True, blank=True, max_length=300,
-                                    choices=DAY_OF_WEEK)  # models.ManyToManyField(DayOfWeek, blank=True)
+    days_of_week = models.ManyToManyField(DayOfWeek, null=True,
+                                          blank=True)  # models.ManyToManyField(DayOfWeek, blank=True)
 
     start_time = models.TimeField(blank=True, null=True, )
+    end_time = models.TimeField(blank=True, null=True)
     schedule_date = models.DateField(blank=True, null=True)
-    start_date = models.DateField(blank=True, null=True)
-    end_date = models.DateField(blank=True, null=True)
+    custom_start_date = models.DateField(blank=True, null=True)
+    custom_end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} - {self.start_time}"
 
+    ##need to modify save for endtime
+
 
 class Timeslot(models.Model):
+    booking_date = models.DateField(blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
 
