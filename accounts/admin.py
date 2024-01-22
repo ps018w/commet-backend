@@ -26,6 +26,7 @@ class CalendarAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "email",
+                    "password",
                     "full_name",
                     "time_zone",
                     "is_active",

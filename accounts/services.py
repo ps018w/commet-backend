@@ -1,6 +1,6 @@
 
 from datetime import date, timedelta, datetime
-from accounts.models import CustomUser, Calendar
+from accounts.models import CustomUser, Calendar, BookingSlot, Timeslot
 import pandas as pd
 
 def create_slot(request):
@@ -18,7 +18,7 @@ def create_slot(request):
     elif freq == 'H':
         dtrange= 180
     elif freq == 'C':
-        start_date = start_date #'2018-6-15'
+        start_date = start_date #'2018-6-15'6
         end_date = end_date #'2019-3-20'
         dtrange = len(pd.date_range(start=start_date, end=end_date, freq='d'))
 
@@ -28,12 +28,7 @@ def create_slot(request):
 
         if day_of_week in days_of_week:
             schedule_date = current_date
-            #if schedule_date == schedule_date
-            # start_time= datetime.strptime(start_time, '%Y-%m-%d').time()
-            # existing_slot= Calendar.objects.filter(user=user.id,
-            #                                        schedule_date = schedule_date,start_time_gte=start_time+timedelta(hours=1))
-            # if existing_slot:
-            #     return "Already Schedule "
+
             slot =Calendar.objects.create(
                 user=user,
                 frequency=freq,
@@ -43,4 +38,26 @@ def create_slot(request):
             )
 
     return slot
+
+
+def booked_teaching_slot(user_data,request =None):
+    email= user_data['email']
+    tutor = CustomUser.objects.get()
+    print(tutor)
+    student = CustomUser.objects.get(email=email)
+    slot = Timeslot.objects.create(start_time=user_data['start_time'] , end_time=user_data['end_time'])
+    if Calendar.objetcs.filter(user=2,start_time=user_data['start_time']):
+        scheduled_calender = Calendar.objects.get(user=2)
+    else:
+        print("Teacher schedule not available")
+    booked_slot = BookingSlot.objects.create(
+        tutor=tutor,
+        student=student,
+        time_slot =slot,
+        scheduled_calender=scheduled_calender,
+        approved =True,
+
+
+    )
+    pass
 
