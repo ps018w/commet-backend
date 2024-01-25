@@ -16,6 +16,7 @@ admin.site.register(TeachingPreference)
 admin.site.register(Subjects)
 admin.site.register(SubjectSpecialization)
 admin.site.register(MediaGallery)
+admin.site.register(BookingSlot)
 
 
 @admin.register(CustomUser)
@@ -31,6 +32,7 @@ class CalendarAdmin(admin.ModelAdmin):
                     "is_active",
                     "is_staff",
                     "user_type",
+                    "password"
                 )
             },
         ),
@@ -68,6 +70,6 @@ class CalendarAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "schedule_date",
-        "days_of_week",
+        # "days_of_week",
         "start_time"
     )
