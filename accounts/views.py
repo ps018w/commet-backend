@@ -1,13 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework import status
+from .models import CustomUser, Calendar
+from .serializers import UsersSerializer, AuthUserSerializer, CalendarSerializer, BookingSlot, BookingSlotSerializer
 from .models import CustomUser, Calendar, UserEducation, UserDetails, TeachingPreference, BookingSlot
 from .serializers import UsersSerializer, AuthUserSerializer, CalendarSerializer, UserLoginSerializer, \
     UserDetailsSerializer, UserEducationSerializer, TeachingPreferenceSerializer, BookingSlotSerializer
 from rest_framework.permissions import AllowAny
-# from rest_framework_api_key.per
 
 from django.contrib.auth import authenticate, login
 
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication, BaseAuthentication, \
     BasicAuthentication
 from drf_yasg import openapi
@@ -17,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from rest_framework.response import Response
-from accounts.services import create_slot
+from accounts.services import create_slot, booked_teaching_slot
 
 
 class UserModelList(APIView):
@@ -39,7 +41,7 @@ class UserModelList(APIView):
 
 class SignUpView(APIView):
     # queryset = CustomUser.objects.all()
-    # serializer_class = UsersSerializer
+    #serializer_class = UsersSerializer
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(responses={200: AuthUserSerializer()}, request_body=AuthUserSerializer)
@@ -93,7 +95,7 @@ class CalendarCreateView(APIView):
         data = create_slot(request)  # freq, user, start_time,days_of_week)
         # print(slot_data)
         if data:
-            return Response({'message': 'Schedules booked successfully.'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Schedules created successfully.'}, status=status.HTTP_200_OK)
         return Response({'message': 'Errors'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -246,3 +248,31 @@ class BookingSlotAPI(APIView):
         #
         # else:
         pass
+
+
+class BookingSlot(APIView):
+
+    permission_classes = [AllowAny]
+
+
+    @swagger_auto_schema(request_body=BookingSlotSerializer)
+    def post(self, request):
+
+        data = request.data
+
+        booked_slot = booked_teaching_slot(data,request=request)
+
+        return Response({'message': 'Schedules booked successfully.'}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+        pass
+
+
+
+
