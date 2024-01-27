@@ -43,7 +43,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password']
+        fields = ['email', 'password','full_name','user_type','time_zone']
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
