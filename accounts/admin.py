@@ -20,7 +20,7 @@ admin.site.register(BookingSlot)
 
 
 @admin.register(CustomUser)
-class CalendarAdmin(admin.ModelAdmin):
+class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None,
