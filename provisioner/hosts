@@ -5,7 +5,7 @@ django_requirements_file=requirements.txt
 django_settings="settings"
 letsencrypt_email=backend@commet.com
 project_namespace={{ project_name }}-{{ deploy_environment }}
-project_path=/home/ubuntu/{{ deploy_environment }}/commet_backend
+project_path=/home/ubuntu/{{ deploy_environment }}/commet-backend
 venv_path=/home/ubuntu/{{ deploy_environment }}/commet-venv
 
 [dev]
