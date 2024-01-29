@@ -6,7 +6,7 @@ django_settings="settings"
 letsencrypt_email=backend@commet.com
 project_namespace={{ project_name }}-{{ deploy_environment }}
 project_path=/home/ubuntu/{{ deploy_environment }}/commet_backend
-venv_path=/home/ubuntu/{{ deploy_environment }}/comet-venv
+venv_path=/home/ubuntu/{{ deploy_environment }}/commet-venv
 
 [dev]
 34.234.76.125
