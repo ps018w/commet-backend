@@ -51,7 +51,7 @@ regenerate:  ## Delete and create new database.
 
 install: venv  ## Install and setup project dependencies
 	${ENV_PREFIX}python -m pip install --upgrade pip wheel
-	${ENV_PREFIX}python -m pip install -r requirements/development.txt
+	${ENV_PREFIX}python -m pip install -r requirements.txt
 	${ENV_PREFIX}pre-commit install
 ifneq ($(CI),True)
 	-createdb $(DB_NAME)
