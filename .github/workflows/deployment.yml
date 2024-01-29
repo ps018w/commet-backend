@@ -1,0 +1,55 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        type: choice
+        description: Environment to Deploy
+        options:
+          - dev
+          - prod
+      tag:
+        description: Tag to deploy
+        required: true
+
+jobs:
+  deploy:
+    runs-on: latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploying on ${{ github.event.inputs.host }}
+        run: |
+          echo "Running Deployment for ${{ github.event.inputs.host }}"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          cat .github/ssh_known_hosts > ~/.ssh/known_hosts
+          cat .github/ssh_config > ~/.ssh/config
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Load cached venv
+        id: cached-pip-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-py39-deployment
+
+      - name: Install Ansible
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip3 install ansible==4.10.0
+
+      - name: Run Ansible
+        run: |
+          REPO_VERSION="${{ github.event.inputs.tag }}" ENV="${{ github.event.inputs.host }}" make configure_deploy

@@ -1,0 +1,57 @@
+name: CI/CD
+
+on: [push]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-dev:
+    if: ${{ github.ref == 'refs/heads/deploy' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Dev
+        uses: appleboy/ssh-action@master
+        with:
+          host: 34.234.76.125
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+          script: |
+            echo "Deployment started"
+            DEPLOY_ENV=dev
+            echo "Deployment started-1"
+            cd /home/ubuntu/$DEPLOY_ENV/
+            [ ! -f "commet-venv/bin/activate" ] && python3 -m venv beacon-venv
+            echo "Deployment started-2"
+            source commet-venv/bin/activate
+            pip3 install ansible==4.10.0
+            echo "Deployment started-3"
+            cd commet-backend/
+            echo "Deployment started-4"
+            export DJANGO_SETTINGS_MODULE='settings'
+            ansible-playbook -i provisioner/hosts provisioner/site.yml --limit=$DEPLOY_ENV --tags=deploy  -c local
+
+  deploy-prod:
+    # TODO: Uncomment following line to auto-deploy on stg
+    # Due to Anthem restrictions this is now close.
+    #if: ${{ github.ref == 'no_auto_deploy_for_prod' }}
+    if: ${{ github.ref == 'refs/heads/prod' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+      - name: Deploy to Prod
+        uses: appleboy/ssh-action@master
+        with:
+          host: 18.253.135.190
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          script: |
+            DEPLOY_ENV=prod
+            cd /home/ubuntu/$DEPLOY_ENV/
+            [ ! -f "beacon-venv/bin/activate" ] && python3.9 -m venv beacon-venv
+            source beacon-venv/bin/activate
+            pip3 install ansible==4.10.0
+            cd beacon-backend/
+            ansible-playbook -i provisioner/hosts provisioner/site.yml --limit=$DEPLOY_ENV --tags=deploy -c local

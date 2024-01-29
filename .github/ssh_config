@@ -1,0 +1,7 @@
+Host 34.234.76.125
+    user ubuntu
+
+
+Host app.mybeaconwellbeing.com
+    hostname 18.253.135.190
+    user ubuntu
