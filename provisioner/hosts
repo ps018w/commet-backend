@@ -9,12 +9,12 @@ project_path=/home/ubuntu/{{ deploy_environment }}/commet_backend
 venv_path=/home/ubuntu/{{ deploy_environment }}/comet-venv
 
 [dev]
-54.225.35.81
+34.234.76.125
 
 [dev:vars]
 deploy_environment=dev
 use_letsencrypt=True
-domain_name=54.225.35.81
+domain_name=34.234.76.125
 repo_version=deploy
 asgi_workers=2
 
