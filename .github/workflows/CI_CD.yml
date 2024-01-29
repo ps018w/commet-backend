@@ -8,7 +8,7 @@ concurrency:
 
 jobs:
   deploy-dev:
-    if: ${{ github.ref == 'refs/heads/deploy' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Dev

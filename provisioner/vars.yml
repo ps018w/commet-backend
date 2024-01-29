@@ -1,7 +1,7 @@
 ---
 project_name: commet
-project_repo_url: git@github.com:GA352491/comet_backend.git
-project_repo_remote: origin/deploy
+project_repo_url: git@github.com:ps018w/commet-backend.git
+project_repo_remote: origin/main
 pg_gis: False
 sass_with_django_compressor: False
 celeryflower_env_configs:
