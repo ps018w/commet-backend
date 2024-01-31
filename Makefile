@@ -2,7 +2,7 @@
 SHELL := bash
 .ONESHELL:
 
-PROJECT_NAME=commet
+PROJECT_NAME=comet
 DB_NAME=$(PROJECT_NAME)
 INVENTORY=provisioner/hosts
 PLAYBOOK=provisioner/site.yml
