@@ -132,13 +132,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-ROOT_DIR=os.path(BASE_DIR)
-APPS_DIR = ROOT_DIR.path("comet")
-LOCALE_PATHS = (str(APPS_DIR.path("locale")),)
-
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '.staticfiles')
 MEDIA_URL = 'media/'
+LOCALE_PATHS = (str(APPS_DIR.path("locale")),)
 # MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
