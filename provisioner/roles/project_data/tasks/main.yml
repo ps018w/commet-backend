@@ -64,10 +64,10 @@
   systemd: state=restarted name=asgi-{{ project_namespace }}
   tags: ["deploy"]
   notify: reload celery # reload celery everytime asgi conf changes
-
-- name: Build documentation for "/docs" url.
-  command: "{{ venv_path }}/bin/mkdocs build"
-  args:
-    chdir: "{{ project_path }}"
-  become: false
-  tags: ["deploy", "documentation"]
+#
+#- name: Build documentation for "/docs" url.
+#  command: "{{ venv_path }}/bin/mkdocs build"
+#  args:
+#    chdir: "{{ project_path }}"
+#  become: false
+#  tags: ["deploy", "documentation"]
