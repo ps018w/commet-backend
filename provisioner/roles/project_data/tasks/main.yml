@@ -55,10 +55,10 @@
 
 - import_tasks: asgi-setup.yml
 
-- name: run compilemessages for static translations
-  django_manage: command=compilemessages app_path={{ project_path }} virtualenv={{ venv_path }}
-  become: false
-  tags: ["deploy"]
+#- name: run compilemessages for static translations
+#  django_manage: command=compilemessages app_path={{ project_path }} virtualenv={{ venv_path }}
+#  become: false
+#  tags: ["deploy"]
 
 - name: restart asgi processes
   systemd: state=restarted name=asgi-{{ project_namespace }}
