@@ -60,9 +60,9 @@
 #  become: false
 #  tags: ["deploy"]
 
-#- name: restart asgi processes
-#  systemd: state=restarted name=asgi-{{ project_namespace }}
-#  tags: ["deploy"]
+- name: restart asgi processes
+  systemd: state=restarted name=asgi-{{ project_namespace }}
+  tags: ["deploy"]
   notify: reload celery # reload celery everytime asgi conf changes
 #
 #- name: Build documentation for "/docs" url.
