@@ -11,8 +11,8 @@
   roles:
     - common
     - nginx
-    - postgresql
-    - project_data
+  #  - postgresql
+  # - project_data
     - redis
     - celery
 
