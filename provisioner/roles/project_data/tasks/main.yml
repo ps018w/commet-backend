@@ -60,10 +60,18 @@
 #  become: false
 #  tags: ["deploy"]
 
-- name: restart asgi processes
-  systemd: state=restarted name=asgi-{{ project_namespace }}
+#- name: restart asgi processes
+#  systemd: state=restarted name=asgi-{{ project_namespace }}
+#  tags: ["deploy"]
+#  notify: reload celery # reload celery everytime asgi conf changes
+
+- name: restart gunicorn processes
+  systemd: state=restarted name=gunicorn.service
+  become: true
   tags: ["deploy"]
   notify: reload celery # reload celery everytime asgi conf changes
+
+
 #
 #- name: Build documentation for "/docs" url.
 #  command: "{{ venv_path }}/bin/mkdocs build"
