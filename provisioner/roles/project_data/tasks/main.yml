@@ -40,8 +40,9 @@
   become: false
   tags: ["deploy"]
 
+
 - name: Run django-compressor offline
-  django_manage: command=compress app_path={{ project_path }} virtualenv={{ venv_path }}
+  django_manage: command=compress app_path={{ project_path }} virtualenv={{ venv_path }} python_path={{ py3 }}
   become: false
   tags: ["deploy"]
   when: sass_with_django_compressor

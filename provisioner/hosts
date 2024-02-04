@@ -7,6 +7,7 @@ letsencrypt_email=backend@commet.com
 project_namespace={{ project_name }}-{{ deploy_environment }}
 project_path=/home/ubuntu/{{ deploy_environment }}/commet-backend
 venv_path=/home/ubuntu/{{ deploy_environment }}/commet-venv
+py3=/home/ubuntu/{{ deploy_environment }}/commet-venv/bin/python3
 
 [dev]
 34.234.76.125
