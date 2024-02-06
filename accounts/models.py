@@ -119,24 +119,29 @@ class DayOfWeek(models.Model):
         return self.name
 
 
+class  CalendarSlot(models.Model):
+    start_time = models.TimeField(blank=True, null=True, )
+    end_time = models.TimeField(blank=True, null=True)
+    schedule_date = models.DateField(blank=True, null=True)
+    weekday = models.ForeignKey(DayOfWeek, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.schedule_date}"
+
 class Calendar(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=False)
     description = models.TextField(blank=True)
-
     frequency = models.CharField(max_length=10, choices=FREQUENCY_CHOICES, default='Monthly', null=True, blank=True)
-
     days_of_week = models.ManyToManyField(DayOfWeek, null=True,
                                           blank=True)  # models.ManyToManyField(DayOfWeek, blank=True)
 
-    start_time = models.TimeField(blank=True, null=True, )
-    end_time = models.TimeField(blank=True, null=True)
-    schedule_date = models.DateField(blank=True, null=True)
     custom_start_date = models.DateField(blank=True, null=True)
     custom_end_date = models.DateField(blank=True, null=True)
+    slot = models.ManyToManyField(CalendarSlot, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.title} - {self.start_time}"
+        return f"{self.title}"
 
     ##need to modify save for endtime
 

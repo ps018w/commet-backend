@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 from .models import CustomUser, Calendar, DayOfWeek, UserDetails, Timeslot, BookingSlot, TeachingClass, UserEducation, \
-    TeachingPreference, Subjects, SubjectSpecialization, MediaGallery
+    TeachingPreference, Subjects, SubjectSpecialization, MediaGallery, CalendarSlot
 
 # admin.site.register(CustomUser)
 # admin.site.register(Calendar)
@@ -44,32 +44,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         "user_type",
     )
 
+admin.site.register(CalendarSlot)
+admin.site.register(Calendar)
 
-@admin.register(Calendar)
-class CalendarAdmin(admin.ModelAdmin):
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "user",
-                    "title",
-                    "description",
-                    "frequency",
-                    "days_of_week",
-                    "start_time",
-                    "schedule_date",
-                    "start_date",
-                    "end_date",
-                )
-            },
-        ),
-
-        # ("important dates", {"fields":("start_time", "modified_at")})
-    )
-    list_display = (
-        "user",
-        "schedule_date",
-        # "days_of_week",
-        "start_time"
-    )
