@@ -70,8 +70,6 @@
   systemd: state=restarted name=gunicorn.service
   become: true
   tags: ["deploy"]
-  notify: reload celery # reload celery everytime asgi conf changes
-
 
 #
 #- name: Build documentation for "/docs" url.
