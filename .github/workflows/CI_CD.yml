@@ -29,7 +29,7 @@ jobs:
             echo "Deployment started-3"
             cd commet-backend/
             echo "Deployment started-4"
-            export DJANGO_SETTINGS_MODULE='settings'
+            export DJANGO_SETTINGS_MODULE='comet.settings'
             ansible-playbook -i provisioner/hosts provisioner/site.yml --limit=$DEPLOY_ENV --tags=deploy  -c local
 
   deploy-prod:
