@@ -34,20 +34,20 @@
   apt:
     pkg: gettext
     state: present
-#
-#- name: collect static
-#  django_manage: command=collectstatic app_path={{ project_path }} virtualenv={{ venv_path }} python_path={{ py3 }}
-#  become: false
-#  tags: ["deploy"]
-#
-#
-#- name: Run django-compressor offline
-#  django_manage: command=compress app_path={{ project_path }} virtualenv={{ venv_path }}
-#  become: false
-#  tags: ["deploy"]
-#  when: sass_with_django_compressor
-#  environment:
-#    PATH: "$PATH:{{ project_path }}/node_modules/.bin:/usr/bin/"
+
+- name: collect static
+  django_manage: command=collectstatic app_path={{ project_path }} virtualenv={{ venv_path }} python_path={{ py3 }}
+  become: false
+  tags: ["deploy"]
+
+
+- name: Run django-compressor offline
+  django_manage: command=compress app_path={{ project_path }} virtualenv={{ venv_path }}
+  become: false
+  tags: ["deploy"]
+  when: sass_with_django_compressor
+  environment:
+    PATH: "$PATH:{{ project_path }}/node_modules/.bin:/usr/bin/"
 
 - name: Run database migrations
   django_manage: command=migrate app_path={{ project_path }} virtualenv={{ venv_path }}
