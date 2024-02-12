@@ -34,16 +34,14 @@ class UsersSerializer(serializers.ModelSerializer):
         return user_obj
 
 
-# class AuthUserSerializer(UsersSerializer):
-#     class Meta(UsersSerializer.Meta):
-#         fields = UsersSerializer.Meta.fields
+
 class AuthUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password','full_name','user_type','time_zone']
+        fields = ['email', 'password']
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -52,7 +50,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         # fields = '__all__'
-        fields = ['email', 'token', 'full_name', 'time_zone', 'user_type']
+        fields = ['email', 'token', 'password']
 
     def get_token(self, obj):
         user = CustomUser.objects.get(email=obj.email)

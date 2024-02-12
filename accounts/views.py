@@ -1,7 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import CustomUser, Calendar
-from .serializers import UsersSerializer, AuthUserSerializer, CalendarSerializer, BookingSlot, BookingSlotSerializer
 from .models import CustomUser, Calendar, UserEducation, UserDetails, TeachingPreference, BookingSlot
 from .serializers import UsersSerializer, AuthUserSerializer, CalendarSerializer, UserLoginSerializer, \
     UserDetailsSerializer, UserEducationSerializer, TeachingPreferenceSerializer, BookingSlotSerializer
@@ -9,12 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from django.contrib.auth import authenticate, login
 
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication, BaseAuthentication, \
-    BasicAuthentication
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -40,11 +33,9 @@ class UserModelList(APIView):
 
 
 class SignUpView(APIView):
-    # queryset = CustomUser.objects.all()
-    #serializer_class = UsersSerializer
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(responses={200: AuthUserSerializer()}, request_body=AuthUserSerializer)
+    @swagger_auto_schema(responses={200: UsersSerializer()}, request_body=UsersSerializer)
     def post(self, request, format=None):
         serializer = UsersSerializer(data=request.data)
         if serializer.is_valid():
@@ -75,8 +66,8 @@ class LoginAPIView(APIView):
 
 
 class CalendarCreateView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated]
+    #authentication_classes = [JWTAuthentication]
 
     queryset = Calendar.objects.all()
 
@@ -90,12 +81,19 @@ class CalendarCreateView(APIView):
 
     @swagger_auto_schema(request_body=CalendarSerializer)
     def post(self, request, format=None):
-        serializer = CalendarSerializer(data=request.data)
-
-        data = create_slot(request)  # freq, user, start_time,days_of_week)
-        # print(slot_data)
-        if data:
-            return Response({'message': 'Schedules created successfully.'}, status=status.HTTP_200_OK)
+        data= request.data
+        user= CustomUser.objects.get(id=request.data['user'])
+        data["user"]=user
+        if user.user_type != 'tutor':
+            print(user)
+            return Response({'message': 'Errors: User not authorised'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            slot = create_slot(request)
+            data['slot']=slot
+            serializer = CalendarSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save(user=request.user)
+                return Response({'message': 'Schedules created successfully.'}, status=status.HTTP_200_OK)
         return Response({'message': 'Errors'}, status=status.HTTP_400_BAD_REQUEST)
 
 
