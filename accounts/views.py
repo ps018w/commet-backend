@@ -74,7 +74,7 @@ class CalendarCreateView(APIView):
     # serializer_class = CalendarSerializer(data=queryset)
     @swagger_auto_schema(responses={200: CalendarSerializer(many=True)})
     def get(self, request, format=None):
-        user = CustomUser.objects.get(email=request.data['email'])
+        user = CustomUser.objects.get(id=request.data['id'])
         calendar = Calendar.objects.filter(user=user)
         serializer = CalendarSerializer(calendar, many=True)
         return Response(serializer.data)
@@ -83,9 +83,9 @@ class CalendarCreateView(APIView):
     def post(self, request, format=None):
         data= request.data
         user= CustomUser.objects.get(id=request.data['user'])
-        data["user"]=user
+        # data["user"]=user
         if user.user_type != 'tutor':
-            print(user)
+
             return Response({'message': 'Errors: User not authorised'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             slot = create_slot(request)
@@ -147,14 +147,6 @@ class UserDetailsApi(APIView):
         if details.is_valid(raise_exception=True):
             details.save(user=request.user)
             return Response({'data': details.data})
-        # try:
-        #     print(details.is_valid(), details.errors())
-        #     if details.is_valid():
-        #         details.save()
-        #     return Response({'data': 'data'})
-        # except Exception as e:
-        #     print(details.errors)
-        #     return Response({'message': f'{details.errors}'}, status=401)
 
     @swagger_auto_schema(request_body=UserDetailsSerializer)
     def put(self, request):

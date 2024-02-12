@@ -120,7 +120,7 @@ class DayOfWeek(models.Model):
 
 
 class  CalendarSlot(models.Model):
-    start_time = models.TimeField(blank=True, null=True, )
+    start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     schedule_date = models.DateField(blank=True, null=True)
     weekday = models.ForeignKey(DayOfWeek, on_delete=models.CASCADE, null=True, blank=True)
